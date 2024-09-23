@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: ascii -*-
 import os
-
 import pygame
-import pygame_gui
 
+from scripts.utility import scale
+
+from .Screens import Screens
+
+from scripts.utility import get_text_box_theme, shorten_text_to_fit
 from scripts.cat.cats import Cat
 from scripts.game_structure import image_cache
+import pygame_gui
+from scripts.game_structure.image_button import UIImageButton, UITextBoxTweaked
 from scripts.game_structure.game_essentials import game, screen_x, screen_y, MANAGER
-from scripts.game_structure.ui_elements import UIImageButton, UITextBoxTweaked
-from scripts.utility import get_text_box_theme, shorten_text_to_fit
-from scripts.utility import scale
-from .Screens import Screens
 
 
 class RoleScreen(Screens):
@@ -23,8 +24,6 @@ class RoleScreen(Screens):
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
-            self.mute_button_pressed(event)
-
             if event.ui_element == self.back_button:
                 self.change_screen("profile screen")
             elif event.ui_element == self.next_cat_button:
@@ -73,7 +72,7 @@ class RoleScreen(Screens):
             elif event.ui_element == self.switch_mediator_app:
                 self.the_cat.status_change("mediator apprentice", resort=True)
                 self.update_selected_cat()
-
+        
         elif event.type == pygame.KEYDOWN and game.settings['keybinds']:
             if event.key == pygame.K_ESCAPE:
                 self.change_screen("profile screen")
@@ -85,20 +84,12 @@ class RoleScreen(Screens):
                 self.update_selected_cat()
 
     def screen_switches(self):
-        self.show_mute_buttons()
 
-        self.next_cat_button = UIImageButton(
-            scale(pygame.Rect((1244, 50), (306, 60))),
-            "",
-            object_id="#next_cat_button",
-            manager=MANAGER,
-            sound_id="page_flip")
-        self.previous_cat_button = UIImageButton(
-            scale(pygame.Rect((50, 50), (306, 60))),
-            "",
-            object_id="#previous_cat_button",
-            manager=MANAGER,
-            sound_id="page_flip")
+        self.next_cat_button = UIImageButton(scale(pygame.Rect((1244, 50), (306, 60))), "", object_id="#next_cat_button"
+                                             , manager=MANAGER)
+        self.previous_cat_button = UIImageButton(scale(pygame.Rect((50, 50), (306, 60))), "",
+                                                 object_id="#previous_cat_button"
+                                                 , manager=MANAGER)
         self.back_button = UIImageButton(scale(pygame.Rect((50, 120), (210, 60))), "", object_id="#back_button"
                                          , manager=MANAGER)
 
@@ -129,7 +120,7 @@ class RoleScreen(Screens):
         self.switch_warrior = UIImageButton(scale(pygame.Rect((451, 720), (344, 72))), "",
                                             object_id="#switch_warrior_button",
                                             manager=MANAGER)
-        self.retire = UIImageButton(scale(pygame.Rect((451, 792), (344, 72))), "",
+        self.retire = UIImageButton(scale(pygame.Rect((451, 792), (334, 72))), "",
                                     object_id="#retire_button",
                                     manager=MANAGER)
         self.switch_med_cat = UIImageButton(scale(pygame.Rect((805, 720), (344, 104))), "",
@@ -432,7 +423,7 @@ class RoleScreen(Screens):
     def get_role_blurb(self):
         if self.the_cat.status == "warrior":
             output = f"{self.the_cat.name} is a <b>warrior</b>. Warriors are adult cats who feed and protect their " \
-                     f"Clan. They are trained to hunt and fight in addition to the ways of the Warrior Code. " \
+                     f"Clan. They are trained to hunt and fight in addition to the ways of the warrior code. " \
                      f"Warriors are essential to the survival of a Clan, and usually make up the bulk of it's members. "
         elif self.the_cat.status == "leader":
             output = f"{self.the_cat.name} is the <b>leader</b> of {game.clan.name}Clan. The guardianship of all " \
